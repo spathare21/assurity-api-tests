@@ -12,10 +12,13 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static io.restassured.RestAssured.given;
 import static io.restassured.module.jsv.JsonSchemaValidator.matchesJsonSchemaInClasspath;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Feature("Categories Details")
 class FirstTest {
+
+    private static final Logger log = LoggerFactory.getLogger(FirstTest.class);
 
     @BeforeEach
     void setup(){
@@ -25,21 +28,24 @@ class FirstTest {
     @Test
     @Story("Verify API Schema")
     void testAPISchema() {
-        given()
+        Response resp = given()
                 .header("Accept", "/")
+                .queryParam("catalogue",false)
                 .when().log().all()
-                .get("Categories/6327/Details.json?catalogue=false")
-                .then()
-                .assertThat()
-                .body(matchesJsonSchemaInClasspath("DetailsSchema.json"));
+                .get("Categories/6327/Details.json");
+        log.info(resp.getBody().asString());
+        resp.then().assertThat().body(matchesJsonSchemaInClasspath("DetailsSchema.json"));
+
     }
     @Test
     @Story("Verify Name Carbon credits is")
     void testValidName() {
         Response resp = given()
                 .header("Accept", "/")
+                .queryParam("catalogue",false)
                 .when().log().all()
-                .get("Categories/6327/Details.json?catalogue=false");
+                .get("Categories/6327/Details.json");
+        log.info(resp.getBody().asString());
         resp.then().assertThat().statusCode(200);
         assertEquals(resp.getBody().jsonPath().get("Name").toString(),"Carbon credits","Verified Carbon credits found");
     }
@@ -48,12 +54,13 @@ class FirstTest {
     void promotionGallaryDesctest() {
         Response resp = given()
                 .header("Accept", "/")
+                .queryParam("catalogue",false)
                 .when().log().all()
-                .get("Categories/6327/Details.json?catalogue=false");
+                .get("Categories/6327/Details.json");
+        log.info(resp.getBody().asString());
         resp.then().assertThat().statusCode(200);
         int i = ((ArrayList<String>) (resp.getBody().jsonPath().get("Promotions.Name"))).indexOf("Gallery");
         String desc = resp.getBody().jsonPath().get("Promotions[" + i + "].Description").toString();
-        System.out.println("Gallary Desc ----------: "+desc);
         assertThat(desc,containsString("2x larger image"));
     }
     @Test
@@ -61,8 +68,10 @@ class FirstTest {
     void canRelisttest() {
         Response resp = given()
                 .header("Accept", "/")
+                .queryParam("catalogue",false)
                 .when().log().all()
-                .get("Categories/6327/Details.json?catalogue=false");
+                .get("Categories/6327/Details.json");
+        log.info(resp.getBody().asString());
         resp.then().assertThat().statusCode(200);
         assertEquals(resp.getBody().jsonPath().get("CanRelist").toString(),"true");
     }

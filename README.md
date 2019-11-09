@@ -18,7 +18,7 @@ $  ./gradlew clean test allureReport
 - After completion open reports build/reports/allure-report/index.html
 - You will see the reports like below 
 
-![Reports](https://recordit.co/Eq6UNddQNAf)
+![Reports]( src/test/resources/allureReportApi.gif)
 
 ### License
 [Apache License](http://www.apache.org/licenses/LICENSE-2.0), Version 2.0
